@@ -27,7 +27,7 @@ def load_to_parquet(df: pd.DataFrame, output_path: Path) -> None:
 
 def main(input_db: str):
     table_name = "Processed_Data"
-    output_path = Path("data/raw/c2d2/processed_data.parquet")
+    output_path = Path("data/raw/processed_data.parquet")
 
     df = extract_from_sqlite(input_db, table_name)
     load_to_parquet(df, output_path)
@@ -36,10 +36,10 @@ def main(input_db: str):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Ingest raw data")
     parser.add_argument(
-        "---data-source",
+        "--data-source",
         required=True,
         help="Path to database"
     )
 
     args = parser.parse_args()
-    main(args.input_db)
+    main(args.data_source)

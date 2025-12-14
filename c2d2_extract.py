@@ -1,7 +1,7 @@
 import pandas as pd
 from pathlib import Path
 
-INPUT_PATH = Path("data/raw/c2d2/processed_data.parquet")
+INPUT_PATH = Path("data/raw/processed_data.parquet")
 OUTPUT_PATH = Path("data/processed/c2d2_flowering.parquet")
 
 APPLE_EPPO_CODES = {"MABSD", "MABSS", "MABPM"}

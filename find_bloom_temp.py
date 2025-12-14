@@ -41,4 +41,4 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
-    main(args.c2d2_db)
+    main(args.data_source)

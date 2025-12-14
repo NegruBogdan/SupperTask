@@ -60,20 +60,20 @@ def main():
             continue
         end_date = row.FloweringDate.date().isoformat()
         start_date = (row.FloweringDate - pd.Timedelta(days=7)).date().isoformat()
-        hourly_df = fetch_hourly_temperature(lat, lon, start_date, end_date)
-        hourly_df["RecordGroupID"] = row.RecordGroupID
-        hourly_df["Year"] = row.Year
-        hourly_df["latitude"] = lat
-        hourly_df["longitude"] = lon
-        results.append(hourly_df)
+        hourly_temp_data = fetch_hourly_temperature(lat, lon, start_date, end_date)
+        hourly_temp_data["RecordGroupID"] = row.RecordGroupID
+        hourly_temp_data["Year"] = row.Year
+        hourly_temp_data["latitude"] = lat
+        hourly_temp_data["longitude"] = lon
+        results.append(hourly_temp_data)
 
     if not results:
         raise RuntimeError("No weather data retrieved")
 
-    final_df = pd.concat(results, ignore_index=True)
+    final_weather_data = pd.concat(results, ignore_index=True)
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    final_df.to_parquet(OUTPUT_PATH, index=False)
-    print(f"Weather ingestion completed: {len(final_df)} hourly rows written")
+    final_weather_data.to_parquet(OUTPUT_PATH, index=False)
+    print(f"Weather ingestion completed: {len(final_weather_data)} hourly rows written")
 
 if __name__ == "__main__":
     main()
