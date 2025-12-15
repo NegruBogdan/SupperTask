@@ -7,11 +7,21 @@ OUTPUT_PATH = Path("data/processed/temperature_report.parquet")
 
 
 def main():
-    
+
     weather_hourly = pd.read_parquet(WEATHER_INPUT_PATH)
+
     flowering_events = pd.read_parquet(
         FLOWERING_INPUT_PATH
     )[["RecordGroupID", "Year", "FloweringDate"]]
+
+    flowering_counts = (
+        flowering_events
+        .assign(Month=lambda x: x["FloweringDate"].dt.month)
+        .groupby(["Year", "Month"], as_index=False)
+        .agg(
+            flowering_record_groups=("RecordGroupID", "nunique")
+        )
+    )
 
     weather_with_flowering = weather_hourly.merge(
         flowering_events,
@@ -31,8 +41,8 @@ def main():
             daily_max_temperature=("temperature_2m", "max"),
             hours_below_0=("temperature_2m", lambda x: (x < 0).sum())
         )
-    ).sort_values(["RecordGroupID", "Year", "Month", "Date"])
-
+        .sort_values(["RecordGroupID", "Year", "Month", "Date"])
+    )
 
     daily_temp_stats["day_to_day_temperature_diff"] = (
         daily_temp_stats
@@ -66,8 +76,10 @@ def main():
         .agg(regional_temp_variability=("region_mean_temp", "std"))
     )
 
-    final_summary = monthly_summary.merge(
-        regional_variability, on=["Year", "Month"], how="left"
+    final_summary = (
+        monthly_summary
+        .merge(regional_variability, on=["Year", "Month"], how="left")
+        .merge(flowering_counts, on=["Year", "Month"], how="left")
     )
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
