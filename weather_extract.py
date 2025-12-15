@@ -3,7 +3,7 @@ from pathlib import Path
 
 WEATHER_INPUT_PATH = Path("data/processed/weather_hourly.parquet")
 FLOWERING_INPUT_PATH = Path("data/processed/c2d2_flowering.parquet")
-OUTPUT_PATH = Path("data/processed/temperature_by_month_year.parquet")
+OUTPUT_PATH = Path("data/processed/temperature_report.parquet")
 
 
 def main():
